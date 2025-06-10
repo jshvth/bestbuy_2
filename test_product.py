@@ -36,3 +36,19 @@ def test_product_buy_more_than_available_raises_exception():
     product = Product("MacBook Air M2", price=1450, quantity=5)
     with pytest.raises(Exception):
         product.buy(10)
+
+def test_non_stocked_product_quantity():
+    product = Product("Regular", 10, 5)
+    non_stocked = NonStockedProduct("License", 50)
+    assert non_stocked.get_quantity() == 0
+    assert non_stocked.buy(3) == 150
+
+def test_limited_product_buy_too_much():
+    limited = LimitedProduct("Shipping", price=10, quantity=10, maximum=1)
+    with pytest.raises(Exception):
+        limited.buy(2)
+
+def test_limited_product_buy_ok():
+    limited = LimitedProduct("Shipping", price=10, quantity=10, maximum=2)
+    price = limited.buy(2)
+    assert price == 20

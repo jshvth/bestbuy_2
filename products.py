@@ -62,3 +62,30 @@ class Product:
         total_price = self.price * quantity
         self.set_quantity(self.get_quantity() - quantity)
         return total_price
+
+class NonStockedProduct(Product):
+    def __init__(self, name: str, price: float):
+        super().__init__(name, price, quantity=0)
+
+    def get_quantity(self) -> int:
+        return 0  # Immer 0
+
+    def is_active(self) -> bool:
+        return True  # Immer aktiv, unabhängig vom Lagerbestand
+
+    def show(self) -> str:
+        return f"{self.name}, Price: ${self.price} (Non-stocked product)"
+
+
+class LimitedProduct(Product):
+    def __init__(self, name: str, price: float, quantity: int, maximum: int):
+        super().__init__(name, price, quantity)
+        self.maximum = maximum
+
+    def buy(self, quantity: int) -> float:
+        if quantity > self.maximum:
+            raise Exception(f"Cannot buy more than {self.maximum} of {self.name}")
+        return super().buy(quantity)
+
+    def show(self) -> str:
+        return f"{self.name}, Price: ${self.price}, Quantity: {self.quantity} (Limit: {self.maximum} per order)"
